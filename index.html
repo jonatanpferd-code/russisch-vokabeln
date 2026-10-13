@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Russisch-Vokabeln</title>
+<meta name="description" content="Vokabeltrainer für drei Russisch-Sets: Auswahl, Schreiben und Prüfungssätze.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Russisch">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f5f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f121c" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="preload" href="fonts/literata-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/golos-text-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Literata";font-style:normal;font-weight:200 900;font-display:swap;src:url(fonts/literata-cyrillic-wght-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Literata";font-style:normal;font-weight:200 900;font-display:swap;src:url(fonts/literata-latin-wght-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Literata";font-style:italic;font-weight:200 900;font-display:swap;src:url(fonts/literata-cyrillic-wght-italic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Literata";font-style:italic;font-weight:200 900;font-display:swap;src:url(fonts/literata-latin-wght-italic.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/golos-text-cyrillic-wght-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/golos-text-latin-wght-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* Layout: one narrow column like a page in an exercise book. Home = three set rows; quiz = one flashcard with the answer area directly below. */
+:root{
+  --paper:#f4f5f9;
+  --surface:#ffffff;
+  --ink:#141a2e;
+  --muted:#596079;
+  --line:#dce0eb;
+  --accent:#2a45c2;        /* Königsblau: school fountain-pen ink */
+  --accent-ink:#ffffff;
+  --accent-soft:#e7ebfb;
+  --ok:#1a7345;
+  --ok-soft:#e2f2e9;
+  --bad:#bf3329;           /* teacher's red pen */
+  --bad-soft:#fbe8e6;
+  --lv-new:#d4d8e4;
+  --lv-pick:#a4b3ee;
+  --lv-write:#2a45c2;
+  --lv-sure:#1a7345;
+  --f-word:"Literata", Georgia, "Times New Roman", serif;
+  --f-ui:"Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f121c; --surface:#171b29; --ink:#e9ebf5; --muted:#9ba1b9; --line:#2a3046;
+    --accent:#8c9fff; --accent-ink:#0f121c; --accent-soft:#1f2645;
+    --ok:#5ccf8c; --ok-soft:#14291e; --bad:#ff7d70; --bad-soft:#331a18;
+    --lv-new:#2c3248; --lv-pick:#4a5794; --lv-write:#8c9fff; --lv-sure:#5ccf8c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f121c; --surface:#171b29; --ink:#e9ebf5; --muted:#9ba1b9; --line:#2a3046;
+  --accent:#8c9fff; --accent-ink:#0f121c; --accent-soft:#1f2645;
+  --ok:#5ccf8c; --ok-soft:#14291e; --bad:#ff7d70; --bad-soft:#331a18;
+  --lv-new:#2c3248; --lv-pick:#4a5794; --lv-write:#8c9fff; --lv-sure:#5ccf8c;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{color-scheme:light;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:16px;line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);-webkit-tap-highlight-color:transparent;touch-action:manipulation;overscroll-behavior-y:none}
+.wrap{max-width:34rem;margin:0 auto;padding-inline:16px;padding-block:20px 48px}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Home */
+.eyebrow{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+h1{font-family:var(--f-word);font-weight:600;font-size:clamp(1.9rem,7vw,2.4rem);line-height:1.1;margin:.3rem 0 0;letter-spacing:-.01em;text-wrap:balance}
+.lede{color:var(--muted);margin:.5rem 0 0;max-width:40ch}
+.controls{display:grid;gap:14px;margin-block:22px}
+.ctl-label{font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:6px}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;min-height:42px;border:0;border-radius:9px;background:transparent;color:var(--ink);font-weight:500;font-size:.92rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.sets{display:grid;gap:10px}
+.set{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.set-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.set-head > div{min-width:0}
+.set-title{font-family:var(--f-word);font-size:1.22rem;font-weight:600;line-height:1.25;margin:0;overflow-wrap:anywhere}
+.set-sub{font-size:.85rem;color:var(--muted);margin-top:2px}
+.bar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--lv-new)}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.legend span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;background:var(--c);vertical-align:1px}
+.legend .of::before{display:none}
+.btn{min-height:44px;padding:0 18px;border-radius:11px;border:1px solid transparent;font-weight:600;font-size:.95rem;cursor:pointer;white-space:nowrap}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.foot{margin-top:26px;display:grid;gap:10px;font-size:.85rem;color:var(--muted)}
+.foot p{margin:0}
+.reset summary{cursor:pointer;color:var(--muted);min-height:36px;display:flex;align-items:center}
+.reset-list{display:grid;gap:4px;margin-top:6px}
+.reset-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:4px}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:500;font-size:.9rem;padding:6px 0;cursor:pointer;min-height:38px;text-align:left}
+.linkbtn.danger{color:var(--bad)}
+.levels{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-top:10px}
+.levels b{font-weight:600;color:var(--ink)}
+
+/* Quiz */
+.qbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.icon{width:40px;height:40px;flex:none;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.icon svg{width:16px;height:16px}
+.qmeta{flex:1;min-width:0;display:grid;gap:6px}
+.qmeta span{font-size:.82rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{height:4px;background:var(--line);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);transition:width .25s ease}
+.qcount{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 18px 26px}
+.card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.74rem}
+.tag{padding:3px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.03em}
+.tag.plain{background:transparent;color:var(--muted);padding-inline:0}
+.dots{margin-left:auto;display:flex;gap:4px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--lv-new)}
+.dots i.on{background:var(--accent)}
+.prompt{font-family:var(--f-word);font-size:clamp(1.8rem,8vw,2.5rem);line-height:1.15;margin:26px 0 0;overflow-wrap:anywhere;text-wrap:balance}
+.prompt.sentence{font-size:clamp(1.18rem,4.8vw,1.42rem);line-height:1.45;text-wrap:pretty;margin-top:20px}
+.pnote{font-family:var(--f-word);font-style:italic;color:var(--muted);margin:8px 0 0}
+.answer{margin-top:14px;display:grid;gap:10px}
+.instr{margin:0;color:var(--muted);font-size:.92rem}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:440px){.choices{grid-template-columns:1fr}}
+.choice{min-height:52px;text-align:left;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1rem;font-weight:500;cursor:pointer;display:flex;gap:12px;align-items:center;min-width:0}
+.choice span:last-child{min-width:0;overflow-wrap:anywhere}
+.choice .k{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.choice:disabled{cursor:default}
+.choice.right{border-color:var(--ok);background:var(--ok-soft)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.typed{display:flex;gap:8px}
+.typed input{flex:1;min-width:0;min-height:52px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--f-ui);font-size:1.15rem;font-weight:500}
+.typed input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.subrow{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hintline{font-family:var(--f-word);font-size:1.15rem;letter-spacing:.12em;color:var(--muted);margin:0}
+.fb{border-radius:14px;padding:14px 16px;display:grid;gap:6px;background:var(--surface);border:1px solid var(--line)}
+.fb.ok{background:var(--ok-soft);border-color:transparent}
+.fb.bad{background:var(--bad-soft);border-color:transparent}
+.fb-h{font-weight:700;display:flex;align-items:center;gap:8px;margin:0}
+.fb-h svg{width:18px;height:18px;flex:none}
+.fb.ok .fb-h{color:var(--ok)}
+.fb.bad .fb-h{color:var(--bad)}
+.fb-ans{font-family:var(--f-word);font-size:1.3rem;line-height:1.3;margin:0;overflow-wrap:anywhere}
+.fb-ans.sentence{font-size:1.12rem;line-height:1.45}
+.yours{text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px}
+.note{font-size:.84rem;color:var(--muted);margin:0}
+.note b{color:var(--ink);font-weight:600}
+.note.level{color:var(--accent);font-weight:500}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rate .btn{padding:0 8px;white-space:normal;line-height:1.2;border-color:var(--line);background:var(--surface);color:var(--ink)}
+.rate .r-bad{color:var(--bad)}
+.rate .r-ok{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.actions .btn-primary{flex:1}
+
+/* End */
+.score{font-family:var(--f-word);font-size:clamp(2.2rem,9vw,3rem);font-weight:600;line-height:1.05;margin:.3rem 0 0;font-variant-numeric:tabular-nums}
+.missed{margin:20px 0 0;padding:0;list-style:none;display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.missed li{padding:10px 14px;border-top:1px solid var(--line);display:grid;gap:2px}
+.missed li:first-child{border-top:0}
+.missed .m-q{font-family:var(--f-word);font-size:1.05rem;overflow-wrap:anywhere}
+.missed .m-a{font-size:.88rem;color:var(--muted);overflow-wrap:anywhere}
+.end-actions{display:grid;gap:8px;margin-top:20px}
+.end-actions .btn{width:100%}
+.allgood{margin:16px 0 0;color:var(--muted)}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Data: the three Quizlet sets ---------- */
+var RAW = [
+ {id:"s1", title:"Где лучше жить 2", sub:"Wichtige Sätze für die Prüfung", kind:"sentences", items:[
+  ["Жизнь в городе или за городом (в деревне) очень разная.","Das Leben in der Stadt oder auf dem Land ist sehr unterschiedlich."],
+  ["В городе есть много удобств, но там шумно, много людей и загрязненный (грязный) воздух.","In der Stadt gibt es viele Annehmlichkeiten, aber dort ist es laut, es gibt viele Menschen und die Luft ist verschmutzt."],
+  ["За городом (в деревне) тихо, много природы, но мало удобств.","Auf dem Land ist es ruhig, es gibt viel Natur, aber wenig Annehmlichkeiten."],
+  ["В городе удобная квартира: есть отопление, электричество, вода и вывозят мусор.","In der Stadt gibt es komfortable Wohnungen: Es gibt Heizung, Strom, Wasser und Müllabfuhr.","Auf der Karte steht „электричества“. Nach „есть“ steht der Nominativ: электричество."],
+  ["В городе до работы можно добраться на автобусе, метро, машине или такси.","Zur Arbeit kann man mit dem Bus, der U-Bahn, dem Auto oder dem Taxi kommen.","Auf der Karte steht „Taxifahrer“. такси heißt Taxi, Taxifahrer wäre таксист."],
+  ["В городе есть разные транспортные средства: автобус, метро, машина, такси, трамвай, троллейбус и другие.","In der Stadt gibt es verschiedene Verkehrsmittel: Bus, U-Bahn, Auto, Taxi, Straßenbahn, Oberleitungsbus und andere."],
+  ["В городе много школ и детских садов, и они находятся недалеко от дома.","In der Stadt gibt es viele Schulen und Kindergärten, und sie befinden sich nicht weit von zu Hause.","Die deutsche Seite der Karte hatte Tippfehler („schon“ statt „Schulen“, „entfernt“ doppelt)."],
+  ["В городе есть также много магазинов.","In der Stadt gibt es auch viele Geschäfte."],
+  ["В городе есть хорошие возможности для образования и работы.","In der Stadt gibt es gute Möglichkeiten für Bildung und Arbeit."],
+  ["В городе есть много университетов и разных профессий.","In der Stadt gibt es viele Universitäten und verschiedene Berufe."],
+  ["В городе можно найти хорошую работу и построить карьеру.","In der Stadt kann man gute Arbeit finden und Karriere machen."],
+  ["В городе много развлечений: можно ходить в кино, театр, на концерты, в кафе и в рестораны.","In der Stadt gibt es viele Freizeitmöglichkeiten: Man kann ins Kino, ins Theater, auf Konzerte, in Cafés und Restaurants gehen."],
+  ["В городе можно познакомиться с разными интересными людьми.","In der Stadt kann man verschiedene interessante Menschen kennenlernen."],
+  ["В городе есть один минус: это стресс. Люди часто мало спят, много работают и устают, и это плохо для здоровья.","In der Stadt gibt es einen Nachteil: den Stress. Die Menschen schlafen oft wenig, arbeiten viel und sind müde, und das ist schlecht für die Gesundheit.","Auf der Karte steht „Ein weiterer Nachteil“. один минус heißt „ein Nachteil“, „ein weiterer“ wäre ещё один."],
+  ["Жизнь за городом или в деревне имеет свои преимущества.","Das Leben auf dem Land hat seine Vorteile."],
+  ["В деревне чистый воздух, много природы и меньше шума.","Auf dem Land gibt es saubere Luft, viel Natur und weniger Lärm.","Auf der Karte steht „Finn Natur“, gemeint ist „viel Natur“."],
+  ["За городом магазины, школы и больницы могут находиться очень далеко.","Auf dem Land können Geschäfte, Schulen und Krankenhäuser sehr weit entfernt sein."],
+  ["В деревне можно спокойно жить и отдыхать от городской суеты.","Auf dem Land kann man ruhig leben und sich vom Trubel der Stadt erholen."],
+  ["Из деревни сложно добраться до работы.","Aus dem Dorf kann es schwierig sein, zur Arbeit zu kommen."],
+  ["Каждый человек должен решить сам, где ему лучше или комфортнее жить.","Jeder Mensch muss selbst entscheiden, wo er sich wohler fühlt."],
+  ["Я предпочитаю жить в деревне.","Ich bevorzuge das Leben auf dem Land."],
+  ["Я предпочитаю жить в городе.","Ich bevorzuge das Leben in der Stadt."]
+ ]},
+ {id:"s2", title:"Lektion 10 · Отдых", sub:"Urlaub, Wetter, Freizeit", kind:"words", items:[
+  ["ездить","fahren"],["тепло","warm"],["холодно","kalt"],["отпуск","Urlaub"],["каникулы","Ferien"],
+  ["страна","Land"],["погода","Wetter"],["купаться","baden"],["идёт снег","es schneit"],["идёт дождь","es regnet"],
+  ["пляж","Strand"],["озеро","See"],["зима","Winter"],["лето","Sommer"],["осень","Herbst"],
+  ["весна","Frühling"],["время года","Jahreszeit"],["мо́ре","Meer"],
+  ["за что","für|wegen",{n:"+ Akk.",h:1}],
+  ["прекрасный","schön|wunderschön",{n:"-ая",h:1}],
+  ["лыжи","Ski",{a:1}],
+  ["лечение","Kur|Kuraufenthalt",{h:1}],
+  ["совсем","ganz|gänzlich|völlig"],["деревня","Dorf"],["река́","Fluss"],["планировать","planen"],
+  ["загорать","sich sonnen"],["кататься на банане","Bananenboot fahren"],["петь","singen"],
+  ["ездить за город","aufs Land fahren"],["база отдыха","Touristenherberge"],["рисовать","malen|zeichnen"],
+  ["лодка","Boot"],["ловить","fangen"],["ходить в походы","wandern"],
+  ["костёр","Lagerfeuer",{n:"Pl. костры"}],
+  ["ночевать","übernachten"],["палатка","Zelt"],["мороз","Frost"],["компания","Gesellschaft"],
+  ["коньки","Schlittschuhe"],["санки","Schlitten"],["баня","Sauna"],["прохладно","kühl"],["редко","selten"],
+  ["градус","Grad"],["собирать","sammeln"],["тихо","still"],["спокойно","ruhig"],["ветер","Wind"],
+  ["облачно","bewölkt"],["ясно","klar"],["температура","Temperatur"],["завтра","morgen"],["давно","seit langem"],
+  ["быть","sein"],["путешествовать","reisen"],["до утра","bis zum Morgen"],["в общем","im Allgemeinen"],
+  ["выходные","Wochenende"],["за границей","im Ausland"],
+  ["в прошлом году","im vergangenen Jahr",{f:"Auf der deutschen Seite der Karte steht zusätzlich „границей году“."}],
+  ["замечательный","wunderbar"],["песня","Lied"],["грязный","schmutzig"],["ужасный","schrecklich"],
+  ["всё время","die ganze Zeit"],
+  ["уникальный","einzigartig|einmalig",{n:"-ая"}],
+  ["маршрут","Wanderroute"],
+  ["экологический","ökologisch",{n:"-ая"}],
+  ["легендарный","legendär",{n:"-ая"}],
+  ["комфортабельный","komfortabel"]
+ ]},
+ {id:"s3", title:"Ясно 11 · Где лучше жить?", sub:"Stadt und Land", kind:"words", items:[
+  ["запад","Westen"],["восток","Osten"],["юг","Süden"],
+  ["идти","gehen",{n:"ich gehe: иду",alt:["иду"]}],
+  ["ехать","fahren"],["находиться","sich befinden"],["жизнь","Leben"],["воздух","Luft"],["шум","Lärm"],
+  ["пробка","Stau",{n:"Gen. Pl. пробок"}],
+  ["экология","Umwelt"],["мало","wenig"],
+  ["лучше","besser",{f:"Auf der Karte steht „wenig besser“."}],
+  ["хуже","schlechter"],["меньше","weniger"],
+  ["земля","Bundesland",{h:1}],
+  ["уже","schon"],
+  ["недавно","vor kurzem|neulich",{f:"Auf der Karte steht „nicht lange“. Das wäre недолго."}],
+  ["родственники","Verwandte"],["область","Gebiet"],
+  ["новость","Neuigkeit",{n:"Gen. Pl. новостей"}],
+  ["площадь","Platz"],["крепость","Festung"],["возможность","Möglichkeit"],["крупный","groß"],["культурный","kulturell"],
+  ["этаж","Etage"],
+  ["берег","Ufer",{n:"Pl. берега́"}],
+  ["известный","berühmt",{n:"Pl. -ые"}],
+  ["гимназия","Gymnasium"],["поле","Feld"],["столица","Hauptstadt"],["кабинет","Büro"],["поликлиника","Poliklinik"],
+  ["садик","Kindergarten"],["гость","Gast"],
+  ["мост","Brücke",{n:"Gen. Pl. мостов"}],
+  ["библиотека","Bibliothek"],["городской","städtisch"],["городской человек","Städter"],["стройка","Baustelle"],
+  ["по-вашему","Ihrer Meinung nach|eurer Meinung nach",{a:1}],
+  ["за что","für|zugunsten von",{n:"+ Akk.",h:1}],
+  ["инфраструктура","Infrastruktur"],["проводить время","Zeit verbringen"],["клуб","Klub"],["есть","es gibt"],
+  ["ребёнок","Kind",{n:"Pl. дети · Gen. Sg. ребёнка"}],
+  ["идеальный","ideal",{n:"-ая"}],
+  ["тишина","Stille|Ruhe"],["чистый","sauber"],["натуральный","naturbelassen"],["свежий","frisch"],
+  ["люди","Menschen",{n:"Gen. Pl. людей"}],
+  ["суета","Hektik"],["грязь","Dreck"],["несколько","einige"],["карьера","Karriere"],["честно говоря","ehrlich gesagt"],
+  ["троллейбус","Oberleitungsbus"],["маршрутка","Kleinbus"],
+  ["электричка","Nahverkehrszug|Regionalbahn",{n:"Gen. Pl. электричек"}],
+  ["мотоцикл","Motorrad"],["мочь","können"],["приглашать","einladen"],["сосед","Nachbar"],
+  ["современный","modern",{n:"-ая"}]
+ ]}
+];
+
+var SETS = RAW.map(function(s){
+  return {
+    id:s.id, title:s.title, sub:s.sub, kind:s.kind,
+    unit: s.kind === "sentences" ? "Sätze" : "Wörter",
+    cards: s.items.map(function(it, i){
+      if (s.kind === "sentences") return {id:i+1, ru:it[0], deText:it[1], fix:it[2] || null};
+      var o = it[2] || {};
+      return {id:i+1, ru:it[0], de:it[1].split("|"), note:o.n || null, hier:!!o.h, fix:o.f || null, added:!!o.a, alt:o.alt || []};
+    })
+  };
+});
+
+var EXAM = new Date(2027, 5, 29); // mündliche Prüfung Russisch, 29.06.2027
+var ADDED_NOTE = "Die deutsche Seite war in deinem Screenshot nicht zu sehen. Das ist die übliche Bedeutung, vergleiche sie mit deiner Karte.";
+
+/* ---------- Storage: on this iPhone (localStorage of the home-screen app) ---------- */
+var LS = "ru-trainer-v1";
+function loadLocal(){ try { var r = JSON.parse(localStorage.getItem(LS) || "null"); return r && typeof r === "object" ? r : null; } catch(e){ return null; } }
+var saved = loadLocal();
+var progress = (saved && saved.p) || {};
+var prefs = {dir:"both", size:20};
+if (saved && saved.prefs){ if (saved.prefs.dir) prefs.dir = saved.prefs.dir; if (saved.prefs.size) prefs.size = saved.prefs.size; }
+var storageOk = true;
+function saveLocal(){
+  try { localStorage.setItem(LS, JSON.stringify({p:progress, prefs:prefs})); storageOk = true; }
+  catch(e){ storageOk = false; var el = document.getElementById("sync"); if (el) el.textContent = syncText(); }
+}
+function syncText(){
+  if (!storageOk) return "Speichern hat nicht geklappt. Prüfe, ob auf dem iPhone noch Speicherplatz frei ist.";
+  return "Dein Fortschritt wird auf diesem Gerät gespeichert. Wenn du die App vom Home-Bildschirm löschst, ist er weg.";
+}
+function scheduleWrite(){}
+function flush(){}
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function(){}); } catch(e){}
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", function(){ navigator.serviceWorker.register("./sw.js").catch(function(){}); });
+}
+
+/* ---------- Helpers ---------- */
+var $app = document.getElementById("app");
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function shuffle(a){ for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function dirsFor(d){ return d === "both" ? ["rd","dr"] : [d]; }
+function keyOf(set, card, dir){ return set.id + "_" + card.id + "_" + dir; }
+function lvl(k){ return (progress[k] && progress[k].l) || 0; }
+function deShow(c){ return (c.hier ? "hier: " : "") + c.de.join(", "); }
+function dePrompt(c){ return (c.hier ? "hier: " : "") + c.de.join(" / "); }
+var RX_STRESS = new RegExp("[" + String.fromCharCode(0x301, 0x300) + "]", "g");
+var RX_MARKS = new RegExp("[" + String.fromCharCode(0x301, 0x300, 0x308) + "]", "g");
+function stripStress(s){ return s.normalize("NFD").replace(RX_STRESS, "").normalize("NFC"); }
+
+function normRu(s){
+  return String(s).toLowerCase().normalize("NFD").replace(RX_MARKS, "").normalize("NFC")
+    .replace(/[.,!?;:()«»„“”"'’\/]/g, " ").replace(/[-‐–—]/g, " ").replace(/\s+/g, " ").trim();
+}
+function normDe(s){
+  var t = String(s).toLowerCase().normalize("NFC")
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss");
+  t = t.normalize("NFD").replace(RX_STRESS, "").normalize("NFC");
+  t = t.replace(/[.,!?;:()«»„“”"'’\/]/g, " ").replace(/[-‐–—]/g, " ").replace(/\s+/g, " ").trim();
+  t = t.replace(/^hier\s+/, "").replace(/^(der|die|das|den|ein|eine)\s+/, "");
+  return t;
+}
+function variantsDe(c){
+  var out = [];
+  c.de.forEach(function(d){ var n = normDe(d); out.push(n); if (n.indexOf("sich ") === 0) out.push(n.slice(5)); });
+  return out;
+}
+function variantsRu(c){ return [c.ru].concat(c.alt || []).map(normRu); }
+function lev(a, b){
+  if (a === b) return 0;
+  var m = a.length, n = b.length, prev = [], cur = [], i, j;
+  for (j = 0; j <= n; j++) prev[j] = j;
+  for (i = 1; i <= m; i++){
+    cur = [i];
+    for (j = 1; j <= n; j++){
+      cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+function checkTyped(raw, it){
+  var rd = it.dir === "rd";
+  var nf = rd ? normDe : normRu;
+  var targets = rd ? variantsDe(it.card) : variantsRu(it.card);
+  var whole = nf(raw);
+  if (!whole) return "empty";
+  if (targets.indexOf(whole) >= 0) return "right";
+  var parts = raw.split(/[,;\/]/).map(function(s){ return nf(s); }).filter(Boolean);
+  for (var i = 0; i < parts.length; i++) if (targets.indexOf(parts[i]) >= 0) return "right";
+  var cands = [whole].concat(parts);
+  for (var k = 0; k < cands.length; k++){
+    for (var t = 0; t < targets.length; t++){
+      if (targets[t].length >= 4 && lev(cands[k], targets[t]) === 1) return "near";
+    }
+  }
+  return "wrong";
+}
+function hintPattern(it){
+  var base = it.dir === "rd" ? it.card.de[0] : it.card.ru;
+  return stripStress(base).split(/\s+/).map(function(w){
+    return w.charAt(0) + Array(Math.max(0, w.length - 1) + 1).join(" _");
+  }).join("   ");
+}
+function daysToExam(){ var t = new Date(); t.setHours(0,0,0,0); return Math.max(0, Math.round((EXAM - t) / 864e5)); }
+
+/* ---------- Progress buckets ---------- */
+function stats(set){
+  var out = {neu:0, pick:0, write:0, sure:0, total:0};
+  set.cards.forEach(function(c){
+    dirsFor(prefs.dir).forEach(function(d){
+      out.total++;
+      var e = progress[keyOf(set, c, d)];
+      if (!e || !e.s) out.neu++;
+      else if (e.l >= 4) out.sure++;
+      else if (set.kind !== "sentences" && e.l >= 2) out.write++;
+      else out.pick++;
+    });
+  });
+  return out;
+}
+
+/* ---------- Home ---------- */
+var quiz = null;
+var resetOpen = false;
+var armedReset = null, armTimer = null;
+
+function segBtn(name, val, label){
+  return '<button type="button" data-pref="' + name + '" data-val="' + val + '" aria-pressed="' + (String(prefs[name]) === String(val)) + '">' + label + '</button>';
+}
+function setRow(set){
+  var s = stats(set);
+  function pct(n){ return s.total ? (n / s.total * 100).toFixed(2) : 0; }
+  var words = set.kind !== "sentences";
+  var legend = '<span style="--c:var(--lv-sure)">Sicher ' + s.sure + '</span>' +
+    (words ? '<span style="--c:var(--lv-write)">Schreiben ' + s.write + '</span><span style="--c:var(--lv-pick)">Auswählen ' + s.pick + '</span>'
+           : '<span style="--c:var(--lv-pick)">In Arbeit ' + s.pick + '</span>') +
+    '<span style="--c:var(--lv-new)">Neu ' + s.neu + '</span><span class="of">von ' + s.total + '</span>';
+  return '<article class="set">' +
+    '<div class="set-head"><div><h2 class="set-title" lang="ru">' + esc(set.title) + '</h2>' +
+    '<div class="set-sub">' + esc(set.sub) + ' · ' + set.cards.length + ' ' + set.unit + '</div></div>' +
+    '<button type="button" class="btn btn-primary" data-start="' + set.id + '">Üben</button></div>' +
+    '<div class="bar" aria-hidden="true"><i style="width:' + pct(s.sure) + '%;background:var(--lv-sure)"></i><i style="width:' + pct(s.write) + '%;background:var(--lv-write)"></i><i style="width:' + pct(s.pick) + '%;background:var(--lv-pick)"></i></div>' +
+    '<div class="legend">' + legend + '</div>' +
+  '</article>';
+}
+function renderHome(){
+  quiz = null;
+  var dirNote = prefs.dir === "both" ? "Jede Karte zählt in beiden Richtungen einzeln." : "";
+  $app.innerHTML = '<div class="wrap">' +
+    '<header><div class="eyebrow">Russisch · mündliche Prüfung in ' + daysToExam() + ' Tagen</div>' +
+    '<h1>Russisch-Vokabeln</h1>' +
+    '<p class="lede">Neue Wörter wählst du aus vier Antworten. Nach zwei richtigen Antworten schreibst du sie selbst. Die Prüfungssätze sagst du laut und deckst dann auf.</p></header>' +
+    '<div class="controls">' +
+      '<div><div class="ctl-label" id="lbl-dir">Richtung</div><div class="seg" role="group" aria-labelledby="lbl-dir">' + segBtn("dir","rd","RU → DE") + segBtn("dir","dr","DE → RU") + segBtn("dir","both","Beide") + '</div></div>' +
+      '<div><div class="ctl-label" id="lbl-size">Karten pro Runde</div><div class="seg" role="group" aria-labelledby="lbl-size">' + segBtn("size",10,"10") + segBtn("size",20,"20") + segBtn("size","open","Alle offenen") + '</div></div>' +
+    '</div>' +
+    '<div class="sets">' + SETS.map(setRow).join("") + '</div>' +
+    '<div class="levels"><b>Neu</b> → Auswählen → <b>2× richtig</b> → Schreiben → <b>Sicher</b></div>' +
+    (dirNote ? '<p class="note" style="margin-top:4px">' + dirNote + '</p>' : '') +
+    '<footer class="foot"><p id="sync">' + esc(syncText()) + '</p>' +
+      '<details class="reset" id="reset"' + (resetOpen ? ' open' : '') + '><summary>Fortschritt zurücksetzen</summary><div class="reset-list">' +
+      SETS.map(function(s){ return '<div class="reset-row"><span lang="ru">' + esc(s.title) + '</span><button type="button" class="linkbtn danger" data-reset="' + s.id + '">' + (armedReset === s.id ? 'Wirklich? Nochmal tippen' : 'Zurücksetzen') + '</button></div>'; }).join("") +
+      '</div></details></footer>' +
+  '</div>';
+}
+
+/* ---------- Round building ---------- */
+function buildRound(set, dirs, size, onlyKeys){
+  var pool = [];
+  set.cards.forEach(function(c){ dirs.forEach(function(d){ pool.push({key:keyOf(set, c, d), card:c, dir:d, again:false}); }); });
+  if (onlyKeys){
+    pool = pool.filter(function(it){ return onlyKeys.indexOf(it.key) >= 0; });
+  } else {
+    var e = function(it){ return progress[it.key]; };
+    var learning = shuffle(pool.filter(function(it){ var x = e(it); return x && x.s > 0 && x.l < 4; }));
+    learning.sort(function(a, b){ return (e(b).w > 0 && e(b).l < 2 ? 1 : 0) - (e(a).w > 0 && e(a).l < 2 ? 1 : 0); });
+    var fresh = pool.filter(function(it){ var x = e(it); return !x || !x.s; });
+    var sure = pool.filter(function(it){ var x = e(it); return x && x.s > 0 && x.l >= 4; })
+      .sort(function(a, b){ return (e(a).t || 0) - (e(b).t || 0); });
+    var take = size === "open" ? learning.length + fresh.length : Number(size);
+    if (take === 0) take = Math.min(20, sure.length);
+    pool = learning.concat(fresh, sure).slice(0, take);
+  }
+  shuffle(pool);
+  for (var i = 1; i < pool.length; i++){
+    if (pool[i].card === pool[i-1].card){
+      for (var j = i + 1; j < pool.length; j++){
+        if (pool[j].card !== pool[i-1].card){ var t = pool[i]; pool[i] = pool[j]; pool[j] = t; break; }
+      }
+    }
+  }
+  return pool;
+}
+function startRound(setId, onlyKeys){
+  var set = SETS.filter(function(s){ return s.id === setId; })[0];
+  var items = buildRound(set, dirsFor(prefs.dir), prefs.size, onlyKeys);
+  if (!items.length) return;
+  quiz = {set:set, queue:items, pos:0, right:0, half:0, total:0, wrong:[], pending:null, stage:"ask", hintUsed:false, draft:""};
+  window.scrollTo(0, 0);
+  renderQuiz(true);
+}
+
+/* ---------- Quiz ---------- */
+function curItem(){ return quiz.queue[quiz.pos]; }
+function modeOf(it){ return quiz.set.kind === "sentences" ? "reveal" : (lvl(it.key) >= 2 ? "type" : "choice"); }
+function makeChoices(it){
+  var rd = it.dir === "rd";
+  var txt = function(c){ return rd ? deShow(c) : c.ru; };
+  var nk = function(c){ return rd ? normDe(c.de.join(" ")) : normRu(c.ru); };
+  var seen = {}; seen[nk(it.card)] = 1;
+  var out = [{text:txt(it.card), correct:true}];
+  var pool = shuffle(quiz.set.cards.filter(function(c){ return c !== it.card; }));
+  for (var i = 0; i < pool.length && out.length < 4; i++){
+    var k = nk(pool[i]); if (seen[k]) continue; seen[k] = 1;
+    out.push({text:txt(pool[i]), correct:false});
+  }
+  return shuffle(out);
+}
+var ICON_X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg>';
+var ICON_OK = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>';
+var ICON_BAD = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l9 9M13.5 4.5l-9 9"/></svg>';
+
+function cardNotes(c, rd, withGrammar){
+  var h = "";
+  if (withGrammar && c.note) h += '<p class="note" lang="ru">' + esc(c.ru) + ' · ' + esc(c.note) + '</p>';
+  if (c.fix) h += '<p class="note"><b>Korrigiert:</b> ' + esc(c.fix) + '</p>';
+  if (c.added) h += '<p class="note"><b>Ergänzt:</b> ' + esc(ADDED_NOTE) + '</p>';
+  return h;
+}
+
+function renderQuiz(focus){
+  var it = curItem();
+  if (!it){ renderEnd(); return; }
+  if (!it.mode) it.mode = modeOf(it);
+  if (it.mode === "choice" && !it.choices) it.choices = makeChoices(it);
+  var set = quiz.set, c = it.card, rd = it.dir === "rd", sentence = set.kind === "sentences";
+  var prompt = sentence ? (rd ? c.ru : c.deText) : (rd ? c.ru : dePrompt(c));
+  var plang = rd ? "ru" : "de";
+  var l = Math.min(4, lvl(it.key));
+  var dots = "";
+  for (var d = 1; d <= 4; d++) dots += '<i class="' + (d <= l ? "on" : "") + '"></i>';
+  var modeLabel = it.mode === "choice" ? "Auswählen" : it.mode === "type" ? "Schreiben" : (rd ? "Verstehen" : "Laut sagen");
+  var pct = (quiz.pos / quiz.queue.length * 100).toFixed(1);
+
+  var html = '<div class="wrap">' +
+    '<div class="qbar"><button type="button" class="icon" data-act="close" aria-label="Runde beenden">' + ICON_X + '</button>' +
+      '<div class="qmeta"><span lang="ru">' + esc(set.title) + '</span><div class="track"><i style="width:' + pct + '%"></i></div></div>' +
+      '<span class="qcount">' + (quiz.pos + 1) + '/' + quiz.queue.length + '</span></div>' +
+    '<section class="card" aria-live="polite">' +
+      '<div class="card-top"><span class="tag">' + (rd ? "RU → DE" : "DE → RU") + '</span><span class="tag plain">' + modeLabel + (it.again ? ' · Wiederholung' : '') + '</span>' +
+      (sentence ? '' : '<span class="dots" title="Lernstand">' + dots + '</span>') + '</div>' +
+      '<p class="prompt' + (sentence ? ' sentence' : '') + '" lang="' + plang + '">' + esc(prompt) + '</p>' +
+      ((!sentence && rd && c.note) ? '<p class="pnote" lang="ru">' + esc(c.note) + '</p>' : '') +
+    '</section>' +
+    '<section class="answer">' + answerHtml(it) + '</section>' +
+  '</div>';
+  $app.innerHTML = html;
+
+  if (focus){
+    var el = null;
+    if (quiz.stage === "ask" && it.mode === "type") el = document.getElementById("answer");
+    else if (quiz.stage === "fb") el = document.getElementById("next-btn");
+    if (el){ try { el.focus({preventScroll:true}); } catch(e){ el.focus(); } }
+  }
+}
+
+function answerHtml(it){
+  var c = it.card, rd = it.dir === "rd";
+  if (it.mode === "reveal"){
+    if (quiz.stage === "ask"){
+      return '<p class="instr">' + (rd ? "Was bedeutet der Satz? Sag es dir vor, dann deck auf." : "Sag den Satz laut auf Russisch, dann deck auf.") + '</p>' +
+        '<button type="button" class="btn btn-primary" data-act="reveal">Aufdecken</button>';
+    }
+    return '<div class="fb"><p class="fb-ans sentence" lang="' + (rd ? "de" : "ru") + '">' + esc(rd ? c.deText : c.ru) + '</p>' + cardNotes(c, rd, false) + '</div>' +
+      '<p class="instr">Wie gut wusstest du es?</p>' +
+      '<div class="rate"><button type="button" class="btn r-bad" data-rate="wrong">Nicht gewusst</button><button type="button" class="btn" data-rate="half">Teilweise</button><button type="button" class="btn r-ok" data-rate="right">Gewusst</button></div>';
+  }
+
+  var html = "";
+  if (it.mode === "choice"){
+    html += '<div class="choices">' + it.choices.map(function(ch, i){
+      var cls = "choice";
+      if (quiz.stage === "fb"){ if (ch.correct) cls += " right"; else if (quiz.chosen === i) cls += " wrong"; }
+      return '<button type="button" class="' + cls + '" data-choice="' + i + '"' + (quiz.stage === "fb" ? " disabled" : "") + '><span class="k">' + (i + 1) + '</span><span lang="' + (rd ? "de" : "ru") + '">' + esc(ch.text) + '</span></button>';
+    }).join("") + '</div>';
+  } else if (quiz.stage === "ask"){
+    html += '<form class="typed" id="type-form" autocomplete="off">' +
+      '<input id="answer" type="text" lang="' + (rd ? "de" : "ru") + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="' + (rd ? "auf Deutsch schreiben" : "auf Russisch schreiben") + '" value="' + esc(quiz.draft || "") + '" aria-label="Deine Antwort">' +
+      '<button type="submit" class="btn btn-primary">Prüfen</button></form>' +
+      (quiz.hintUsed ? '<p class="hintline" lang="' + (rd ? "de" : "ru") + '">' + esc(hintPattern(it)) + '</p>' : '') +
+      '<div class="subrow">' + (quiz.hintUsed ? '<span></span>' : '<button type="button" class="linkbtn" data-act="hint">Tipp: Anfangsbuchstabe</button>') +
+      '<button type="button" class="linkbtn" data-act="skip">Weiß ich nicht</button></div>';
+  }
+  if (quiz.stage === "fb") html += feedbackHtml(it);
+  return html;
+}
+
+function feedbackHtml(it){
+  var p = quiz.pending, c = it.card, rd = it.dir === "rd";
+  var ok = p.outcome === "right" || p.outcome === "hint";
+  var alang = rd ? "de" : "ru";
+  var head = ok ? (p.outcome === "hint" ? "Richtig, mit Tipp" : "Richtig") : (p.state === "near" ? "Fast. Ein Buchstabe stimmt nicht." : (p.input ? "Nicht ganz" : "Die Lösung"));
+  var h = '<div class="fb ' + (ok ? "ok" : "bad") + '"><p class="fb-h">' + (ok ? ICON_OK : ICON_BAD) + esc(head) + '</p>' +
+    '<p class="fb-ans" lang="' + alang + '">' + esc(rd ? deShow(c) : c.ru) + '</p>';
+  if (!ok && p.input) h += '<p class="note">Deine Antwort: <span class="yours" lang="' + alang + '">' + esc(p.input) + '</span></p>';
+  h += cardNotes(c, rd, !rd);
+  if (ok && p.outcome === "right" && it.mode === "choice" && lvl(it.key) === 1) h += '<p class="note level">Ab jetzt schreibst du dieses Wort selbst.</p>';
+  if (ok && p.outcome === "right" && lvl(it.key) === 3) h += '<p class="note level">Jetzt sitzt es. Die Karte zählt als sicher.</p>';
+  h += '</div>';
+  h += '<div class="actions"><button type="button" class="btn btn-primary" id="next-btn" data-act="next">Weiter</button>' +
+    ((!ok && p.typed) ? '<button type="button" class="linkbtn" data-act="override">Zählt doch als richtig</button>' : '') + '</div>';
+  return h;
+}
+
+function commit(it, outcome){
+  var e = {l:0, s:0, w:0, t:0}, old = progress[it.key];
+  if (old){ e.l = old.l || 0; e.s = old.s || 0; e.w = old.w || 0; e.t = old.t || 0; }
+  e.s++; e.t = Date.now();
+  if (outcome === "right") e.l = Math.min(5, e.l + 1);
+  else if (outcome === "wrong"){
+    e.w++;
+    if (quiz.set.kind === "sentences") e.l = Math.max(0, e.l - 2);
+    else e.l = e.l >= 2 ? 2 : 0;
+  }
+  progress[it.key] = e;
+  saveLocal();
+  scheduleWrite();
+  if (!it.again){
+    quiz.total++;
+    if (outcome === "right" || outcome === "hint") quiz.right++;
+    else if (outcome === "half") quiz.half++;
+    else quiz.wrong.push(it);
+  }
+  if (outcome === "wrong" && !it.requeued){
+    it.requeued = true;
+    var at = Math.min(quiz.queue.length, quiz.pos + 4);
+    quiz.queue.splice(at, 0, {key:it.key, card:it.card, dir:it.dir, again:true, requeued:true});
+  }
+}
+function advance(){
+  quiz.pos++; quiz.stage = "ask"; quiz.pending = null; quiz.hintUsed = false; quiz.draft = ""; quiz.chosen = null;
+  window.scrollTo(0, 0);
+  renderQuiz(true);
+}
+function onChoice(i){
+  if (!quiz || quiz.stage !== "ask") return;
+  var it = curItem(); if (it.mode !== "choice") return;
+  var ch = it.choices[i]; if (!ch) return;
+  quiz.chosen = i;
+  quiz.pending = {outcome:ch.correct ? "right" : "wrong", state:ch.correct ? "right" : "wrong", input:ch.correct ? "" : ch.text, typed:false};
+  quiz.stage = "fb";
+  renderQuiz(true);
+}
+function onType(val){
+  var it = curItem();
+  var r = checkTyped(val, it);
+  if (r === "empty"){ var el = document.getElementById("answer"); if (el) el.focus(); return; }
+  var ok = r === "right";
+  quiz.pending = {outcome:ok ? (quiz.hintUsed ? "hint" : "right") : "wrong", state:r, input:val.trim(), typed:true};
+  quiz.stage = "fb";
+  renderQuiz(true);
+}
+function next(){
+  if (!quiz || quiz.stage !== "fb") return;
+  commit(curItem(), quiz.pending.outcome);
+  advance();
+}
+function rate(outcome){
+  if (!quiz || quiz.stage !== "revealed") return;
+  commit(curItem(), outcome);
+  advance();
+}
+function closeQuiz(){
+  if (quiz && quiz.stage === "fb" && quiz.pending) commit(curItem(), quiz.pending.outcome);
+  flush();
+  renderHome();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- End of round ---------- */
+function renderEnd(){
+  var q = quiz, set = q.set;
+  var sentence = set.kind === "sentences";
+  var seen = {}, missed = [];
+  q.wrong.forEach(function(it){ if (!seen[it.key]){ seen[it.key] = 1; missed.push(it); } });
+  var list = missed.map(function(it){
+    var c = it.card, rd = it.dir === "rd";
+    var qtext = sentence ? (rd ? c.ru : c.deText) : (rd ? c.ru : dePrompt(c));
+    var atext = sentence ? (rd ? c.deText : c.ru) : (rd ? deShow(c) : c.ru);
+    return '<li><span class="m-q" lang="' + (rd ? "ru" : "de") + '">' + esc(qtext) + '</span><span class="m-a" lang="' + (rd ? "de" : "ru") + '">' + esc(atext) + '</span></li>';
+  }).join("");
+  $app.innerHTML = '<div class="wrap">' +
+    '<div class="eyebrow" lang="ru">' + esc(set.title) + ' · Runde fertig</div>' +
+    '<p class="score">' + q.right + ' von ' + q.total + ' richtig</p>' +
+    (q.half ? '<p class="note" style="margin-top:6px">' + q.half + ' teilweise gewusst</p>' : '') +
+    (missed.length ? '<p class="allgood">Diese ' + (missed.length === 1 ? "Karte kommt" : "Karten kommen") + ' in der nächsten Runde zuerst:</p><ul class="missed">' + list + '</ul>'
+                   : '<p class="allgood">Keine Fehler in dieser Runde.</p>') +
+    '<div class="end-actions">' +
+      (missed.length ? '<button type="button" class="btn btn-primary" data-act="retry">Fehler nochmal üben</button>' : '') +
+      '<button type="button" class="btn ' + (missed.length ? 'btn-ghost' : 'btn-primary') + '" data-start="' + set.id + '">Neue Runde</button>' +
+      '<button type="button" class="btn btn-ghost" data-act="home">Zur Übersicht</button>' +
+    '</div></div>';
+  quiz.missedKeys = missed.map(function(it){ return it.key; });
+  quiz.stage = "end";
+  flush();
+}
+
+/* ---------- Events ---------- */
+$app.addEventListener("click", function(e){
+  var b = e.target.closest("button");
+  if (!b) return;
+  if (b.dataset.pref){
+    var name = b.dataset.pref, val = b.dataset.val;
+    prefs[name] = (name === "size" && val !== "open") ? Number(val) : val;
+    saveLocal(); renderHome(); return;
+  }
+  if (b.dataset.start){ startRound(b.dataset.start); return; }
+  if (b.dataset.reset){
+    var id = b.dataset.reset;
+    if (armedReset === id){
+      Object.keys(progress).forEach(function(k){ if (k.indexOf(id + "_") === 0) delete progress[k]; });
+      armedReset = null; clearTimeout(armTimer);
+      saveLocal(); scheduleWrite(200); renderHome();
+    } else {
+      armedReset = id; clearTimeout(armTimer);
+      armTimer = setTimeout(function(){ armedReset = null; if (!quiz) renderHome(); }, 4000);
+      renderHome();
+    }
+    return;
+  }
+  if (b.dataset.choice != null){ onChoice(Number(b.dataset.choice)); return; }
+  if (b.dataset.rate){ rate(b.dataset.rate); return; }
+  var act = b.dataset.act;
+  if (!act) return;
+  if (act === "close"){ closeQuiz(); return; }
+  if (act === "home"){ renderHome(); window.scrollTo(0, 0); return; }
+  if (act === "retry"){ var keys = quiz.missedKeys || []; startRound(quiz.set.id, keys); return; }
+  if (!quiz) return;
+  if (act === "next"){ next(); return; }
+  if (act === "reveal"){ quiz.stage = "revealed"; renderQuiz(false); return; }
+  if (act === "hint"){
+    var inp = document.getElementById("answer");
+    quiz.draft = inp ? inp.value : "";
+    quiz.hintUsed = true; renderQuiz(true); return;
+  }
+  if (act === "skip"){
+    quiz.pending = {outcome:"wrong", state:"wrong", input:"", typed:false};
+    quiz.stage = "fb"; renderQuiz(true); return;
+  }
+  if (act === "override"){
+    quiz.pending.outcome = quiz.hintUsed ? "hint" : "right";
+    quiz.pending.state = "right";
+    renderQuiz(true); return;
+  }
+});
+$app.addEventListener("submit", function(e){
+  e.preventDefault();
+  if (e.target.id === "type-form"){ var inp = document.getElementById("answer"); onType(inp ? inp.value : ""); }
+});
+$app.addEventListener("toggle", function(e){ if (e.target && e.target.id === "reset") resetOpen = e.target.open; }, true);
+document.addEventListener("keydown", function(e){
+  if (!quiz) return;
+  var tag = (e.target && e.target.tagName) || "";
+  var it = curItem();
+  if (quiz.stage === "ask" && it){
+    if (it.mode === "choice" && /^[1-4]$/.test(e.key)){ onChoice(Number(e.key) - 1); e.preventDefault(); }
+    else if (it.mode === "reveal" && (e.key === "Enter" || e.key === " ") && tag !== "BUTTON"){ quiz.stage = "revealed"; renderQuiz(false); e.preventDefault(); }
+  } else if (quiz.stage === "fb" && e.key === "Enter" && tag !== "BUTTON"){ next(); e.preventDefault(); }
+  else if (quiz.stage === "revealed" && /^[1-3]$/.test(e.key)){ rate(["wrong","half","right"][Number(e.key) - 1]); e.preventDefault(); }
+});
+
+renderHome();
+})();
+</script>
+</body>
+</html>
